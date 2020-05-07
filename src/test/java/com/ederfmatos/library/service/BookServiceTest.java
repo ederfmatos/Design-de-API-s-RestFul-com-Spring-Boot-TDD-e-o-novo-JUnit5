@@ -8,7 +8,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -52,7 +51,7 @@ public class BookServiceTest {
     public void shouldNotSaveABookWithDuplicatedISBN() {
         Book book = oneBook().build();
 
-        doReturn(true).when(repository).existsByIsbn();
+        doReturn(true).when(repository).existsByIsbn(book.getIsbn());
         Throwable exception = catchThrowable(() -> service.save(book));
 
         assertThat(exception)

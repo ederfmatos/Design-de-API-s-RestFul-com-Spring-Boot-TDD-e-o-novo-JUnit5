@@ -23,6 +23,11 @@ public class BookBuilder {
         return this;
     }
 
+    public BookBuilder withIsbn(String isbn) {
+        book.setIsbn(isbn);
+        return this;
+    }
+
     public Book build() {
         return book;
     }
