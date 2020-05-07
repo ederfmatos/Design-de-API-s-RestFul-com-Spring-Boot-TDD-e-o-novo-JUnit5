@@ -1,5 +1,6 @@
 package com.ederfmatos.library.service.impl;
 
+import com.ederfmatos.library.exception.BusinessException;
 import com.ederfmatos.library.model.Book;
 import com.ederfmatos.library.repository.BookRepository;
 import com.ederfmatos.library.service.BookService;
@@ -16,6 +17,9 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book save(Book entity) {
+        if(repository.existsByIsbn()) {
+            throw new BusinessException("Isbn já cadastrado");
+        }
         return repository.save(entity);
     }
 
