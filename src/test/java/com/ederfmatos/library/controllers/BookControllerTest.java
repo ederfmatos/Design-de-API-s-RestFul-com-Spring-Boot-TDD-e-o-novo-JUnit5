@@ -1,6 +1,7 @@
 package com.ederfmatos.library.controllers;
 
 import com.ederfmatos.library.bean.BookPersistBean;
+import com.ederfmatos.library.builder.BookBuilder;
 import com.ederfmatos.library.model.Book;
 import com.ederfmatos.library.service.BookService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,7 +42,7 @@ public class BookControllerTest {
     @DisplayName("Deve criar um livro")
     public void createBookTest() throws Exception {
         BookPersistBean bean = new BookPersistBean(0, "Title", "Author", "123123");
-        Book book = Book.builder().id(1).author("Author").title("Title").isbn("123123").build();
+        Book book = BookBuilder.oneBook().withId(1).build();
 
         given(service.save(Mockito.any(Book.class))).willReturn(book);
 
