@@ -1,7 +1,7 @@
 package com.ederfmatos.library.controllers;
 
 import com.ederfmatos.library.bean.BookPersistBean;
-import com.ederfmatos.library.builder.BookBuilder;
+import com.ederfmatos.library.exception.BusinessException;
 import com.ederfmatos.library.model.Book;
 import com.ederfmatos.library.service.BookService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,6 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import static com.ederfmatos.library.builder.BookBuilder.oneBook;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -43,7 +44,7 @@ public class BookControllerTest {
     @DisplayName("Deve criar um livro")
     public void createBookTest() throws Exception {
         BookPersistBean bean = new BookPersistBean(0, "Title", "Author", "123123");
-        Book book = BookBuilder.oneBook().withId(1).build();
+        Book book = oneBook().withId(1).build();
 
         given(service.save(Mockito.any(Book.class))).willReturn(book);
 
@@ -78,7 +79,28 @@ public class BookControllerTest {
                 .perform(request)
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("errors", hasSize(3)));
+    }
 
+    @Test
+    @DisplayName("Deve lançar exceção ao cadastrar livro com isbn já cadastrado por outro livro")
+    public void createBookWithDuplicatedIsbn() throws Exception {
+        Book book = oneBook().build();
+
+        String json = new ObjectMapper().writeValueAsString(book);
+
+        BusinessException exception = new BusinessException("Isbn já cadastrado");
+        given(service.save(Mockito.any(Book.class))).willThrow(exception);
+
+        MockHttpServletRequestBuilder request = post(BOOK_ROUTE)
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .content(json);
+
+        mock
+                .perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("errors", hasSize(1)))
+                .andExpect(jsonPath("errors[0]").value(exception.getMessage()));
     }
 
 

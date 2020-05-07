@@ -1,6 +1,7 @@
 package com.ederfmatos.library.controller;
 
 import com.ederfmatos.library.bean.BookPersistBean;
+import com.ederfmatos.library.exception.BusinessException;
 import com.ederfmatos.library.lib.bean.ApiErrors;
 import com.ederfmatos.library.model.Book;
 import com.ederfmatos.library.service.BookService;
@@ -40,6 +41,12 @@ public class BookController {
     public ApiErrors handleValidationExceptions(MethodArgumentNotValidException exception) {
         BindingResult bindingResult = exception.getBindingResult();
         return new ApiErrors(bindingResult);
+    }
+
+    @ExceptionHandler(BusinessException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrors handleBusinessException(BusinessException exception) {
+        return new ApiErrors(exception);
     }
 
 }
