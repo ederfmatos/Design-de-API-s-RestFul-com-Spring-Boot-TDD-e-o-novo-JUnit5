@@ -2,11 +2,10 @@ package com.ederfmatos.library.bean;
 
 import lombok.*;
 
-@Getter
-@Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@Data
+@Builder
 public class BookPersistBean {
 
     private long id;
