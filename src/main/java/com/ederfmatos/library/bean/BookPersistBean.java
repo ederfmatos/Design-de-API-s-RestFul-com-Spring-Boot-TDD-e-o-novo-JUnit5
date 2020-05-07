@@ -2,6 +2,8 @@ package com.ederfmatos.library.bean;
 
 import lombok.*;
 
+import javax.validation.constraints.NotEmpty;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
@@ -9,8 +11,14 @@ import lombok.*;
 public class BookPersistBean {
 
     private long id;
+
+    @NotEmpty
     private String title;
+
+    @NotEmpty
     private String author;
+
+    @NotEmpty
     private String isbn;
 
 }
