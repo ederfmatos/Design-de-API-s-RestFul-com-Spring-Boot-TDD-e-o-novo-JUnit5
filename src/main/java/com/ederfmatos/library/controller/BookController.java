@@ -6,6 +6,8 @@ import com.ederfmatos.library.service.BookService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import static com.ederfmatos.library.lib.LibraryMapper.getMapper;
+
 @RestController
 @RequestMapping("/books")
 public class BookController {
@@ -19,10 +21,10 @@ public class BookController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public BookPersistBean create(@RequestBody BookPersistBean in) {
-        Book entity = Book.builder().author(in.getAuthor()).title(in.getTitle()).isbn(in.getIsbn()).build();
+        Book entity = getMapper().map(in, Book.class);
         entity = service.save(entity);
 
-        return BookPersistBean.builder().id(entity.getId()).author(in.getAuthor()).title(in.getTitle()).isbn(in.getIsbn()).build();
+        return getMapper().map(entity, BookPersistBean.class);
     }
 
 }
