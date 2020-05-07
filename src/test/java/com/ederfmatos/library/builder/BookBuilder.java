@@ -4,7 +4,9 @@ import com.ederfmatos.library.model.Book;
 
 public class BookBuilder {
 
-    private BookBuilder() {}
+    private BookBuilder() {
+        setDefaultAttributes();
+    }
 
     private Book book;
 
