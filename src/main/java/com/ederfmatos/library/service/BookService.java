@@ -8,4 +8,6 @@ public interface BookService {
 
     Book save(Book any);
 
+    Book getById(long id);
+
 }
