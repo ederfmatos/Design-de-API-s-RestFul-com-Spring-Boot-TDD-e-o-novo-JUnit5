@@ -6,6 +6,8 @@ import com.ederfmatos.library.repository.BookRepository;
 import com.ederfmatos.library.service.BookService;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class BookServiceImpl implements BookService {
 
@@ -24,7 +26,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public Book getById(long id) {
+    public Optional<Book> getById(long id) {
         return null;
     }
 

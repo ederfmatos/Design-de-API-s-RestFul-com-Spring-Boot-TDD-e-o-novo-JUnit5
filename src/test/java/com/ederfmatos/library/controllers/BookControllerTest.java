@@ -18,8 +18,11 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
 
+import java.util.Optional;
+
 import static com.ederfmatos.library.builder.BookBuilder.oneBook;
 import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -110,7 +113,7 @@ public class BookControllerTest {
         final long id = 1;
 
         Book book = oneBook().build();
-        given(service.getById(id)).willReturn(book);
+        given(service.getById(id)).willReturn(Optional.of(book));
 
         MockHttpServletRequestBuilder request = get(BOOK_ROUTE.concat("/").concat(String.valueOf(id)))
                 .accept(APPLICATION_JSON);
@@ -121,6 +124,20 @@ public class BookControllerTest {
                 .andExpect(jsonPath("title").value(book.getTitle()))
                 .andExpect(jsonPath("author").value(book.getAuthor()))
                 .andExpect(jsonPath("isbn").value(book.getIsbn()));
+    }
+
+    @Test
+    @DisplayName("Deve retornar resource not found quando um livro não existir")
+    public void bookNotFoundTest() throws Exception {
+        final long id = 1;
+
+        given(service.getById(anyLong())).willReturn(Optional.empty());
+
+        MockHttpServletRequestBuilder request = get(BOOK_ROUTE.concat("/").concat(String.valueOf(id)))
+                .accept(APPLICATION_JSON);
+        mock
+                .perform(request)
+                .andExpect(status().isNotFound());
     }
 
 
