@@ -25,8 +25,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -135,6 +134,32 @@ public class BookControllerTest {
 
         MockHttpServletRequestBuilder request = get(BOOK_ROUTE.concat("/").concat(String.valueOf(id)))
                 .accept(APPLICATION_JSON);
+        mock
+                .perform(request)
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @DisplayName("Deve deletar um livro")
+    public void deleteBookTest() throws Exception {
+        final long id = 1;
+
+        Book book = oneBook().build();
+        given(service.getById(anyLong())).willReturn(Optional.of(book));
+
+        MockHttpServletRequestBuilder request = delete(BOOK_ROUTE.concat("/").concat(String.valueOf(id)));
+
+        mock
+                .perform(request)
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @DisplayName("Deve retornar resourceNotFound quando nao encontrar um livro para deletar")
+    public void deleteNotFoundBookTest() throws Exception {
+        given(service.getById(anyLong())).willReturn(Optional.empty());
+        MockHttpServletRequestBuilder request = delete(BOOK_ROUTE.concat("/").concat(String.valueOf(1)));
+
         mock
                 .perform(request)
                 .andExpect(status().isNotFound());
