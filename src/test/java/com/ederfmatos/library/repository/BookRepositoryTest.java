@@ -1,6 +1,5 @@
 package com.ederfmatos.library.repository;
 
-import com.ederfmatos.library.builder.BookBuilder;
 import com.ederfmatos.library.model.Book;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,9 +11,10 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Optional;
+
 import static com.ederfmatos.library.builder.BookBuilder.oneBook;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 
 @ExtendWith(SpringExtension.class)
@@ -51,6 +51,18 @@ public class BookRepositoryTest {
         boolean exists = repository.existsByIsbn(ISBN);
 
         assertThat(exists).isFalse();
+    }
+
+    @Test
+    @DisplayName("Deve retornar um libro pelo id")
+    public void shoulReturnBook() {
+        Book book = oneBook().build();
+
+        entityManager.persist(book);
+
+        Optional<Book> foundBook = repository.findById(book.getId());
+
+        assertThat(foundBook.isPresent()).isTrue();
     }
 
 }
