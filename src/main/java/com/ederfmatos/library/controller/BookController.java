@@ -2,6 +2,7 @@ package com.ederfmatos.library.controller;
 
 import com.ederfmatos.library.bean.BookGetBean;
 import com.ederfmatos.library.bean.BookPersistBean;
+import com.ederfmatos.library.bean.BookUpdateBean;
 import com.ederfmatos.library.exception.BusinessException;
 import com.ederfmatos.library.lib.bean.ApiErrors;
 import com.ederfmatos.library.model.Book;
@@ -45,11 +46,25 @@ public class BookController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteByIF(@PathVariable long id) {
+    public void deleteById(@PathVariable long id) {
         Book book = service.getById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
         service.deleteById(book);
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public BookGetBean update(@PathVariable long id, @RequestBody BookUpdateBean bean) {
+        return service
+                .getById(id)
+                .map(book -> {
+                    bean.setId(id);
+                    book = getMapper().map(bean, Book.class);
+                    service.update(book);
+                    return getMapper().map(book, BookGetBean.class);
+                })
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

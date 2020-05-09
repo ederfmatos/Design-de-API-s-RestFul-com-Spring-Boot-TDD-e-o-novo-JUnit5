@@ -165,5 +165,44 @@ public class BookControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    @DisplayName("Deve atualizar um livro")
+    public void updateBooktest() throws Exception {
+        final long id = 1;
+
+        Book book = oneBook().withAuthor("Teste").withId(id).build();
+
+        given(service.getById(anyLong())).willReturn(Optional.of(book));
+
+        MockHttpServletRequestBuilder request = put(BOOK_ROUTE.concat("/").concat(String.valueOf(id)))
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .content(oneBook().withId(id).inJson());
+
+        mock
+                .perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("id").isNotEmpty())
+                .andExpect(jsonPath("title").value(book.getTitle()))
+                .andExpect(jsonPath("author").value(book.getAuthor()))
+                .andExpect(jsonPath("isbn").value(book.getIsbn()));
+    }
+
+    @Test
+    @DisplayName("Deve retornar exceção ao tentar atualizar um livro inexistente")
+    public void updateNotFoundBooktest() throws Exception {
+        final long id = 1;
+
+        given(service.getById(anyLong())).willReturn(Optional.empty());
+
+        MockHttpServletRequestBuilder request = put(BOOK_ROUTE.concat("/").concat(String.valueOf(id)))
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .content(oneBook().withId(id).withAuthor("Teste").inJson());
+
+        mock
+                .perform(request)
+                .andExpect(status().isNotFound());
+    }
 
 }

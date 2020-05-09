@@ -35,4 +35,9 @@ public class BookServiceImpl implements BookService {
 
     }
 
+    @Override
+    public void update(Book book) {
+
+    }
+
 }
