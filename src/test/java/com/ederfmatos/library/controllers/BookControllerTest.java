@@ -1,6 +1,7 @@
 package com.ederfmatos.library.controllers;
 
 import com.ederfmatos.library.bean.BookPersistBean;
+import com.ederfmatos.library.builder.BookBuilder;
 import com.ederfmatos.library.exception.BusinessException;
 import com.ederfmatos.library.model.Book;
 import com.ederfmatos.library.service.BookService;
@@ -174,17 +175,19 @@ public class BookControllerTest {
 
         given(service.getById(anyLong())).willReturn(Optional.of(book));
 
+        BookBuilder bookBuilder = oneBook().withId(id).withAuthor("Teste 2");
+
         MockHttpServletRequestBuilder request = put(BOOK_ROUTE.concat("/").concat(String.valueOf(id)))
                 .contentType(APPLICATION_JSON)
                 .accept(APPLICATION_JSON)
-                .content(oneBook().withId(id).inJson());
+                .content(bookBuilder.inJson());
 
         mock
                 .perform(request)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("id").isNotEmpty())
                 .andExpect(jsonPath("title").value(book.getTitle()))
-                .andExpect(jsonPath("author").value(book.getAuthor()))
+                .andExpect(jsonPath("author").value("Teste 2"))
                 .andExpect(jsonPath("isbn").value(book.getIsbn()));
     }
 

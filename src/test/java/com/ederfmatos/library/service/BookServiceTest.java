@@ -17,6 +17,8 @@ import java.util.Optional;
 import static com.ederfmatos.library.builder.BookBuilder.oneBook;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
@@ -89,6 +91,47 @@ public class BookServiceTest {
         Optional<Book> book = service.getById(id);
 
         assertThat(book.isPresent()).isFalse();
+    }
+
+    @Test
+    @DisplayName("Deve deletar um book")
+    public void deleteBookTest() {
+        Book book = oneBook().withId(1).build();
+
+        assertDoesNotThrow(() -> doNothing().when(repository).delete(book));
+
+        service.deleteById(book);
+
+        verify(repository, times(1)).delete(book);
+    }
+
+    @Test
+    @DisplayName("Deve ocorrer um erro ao tentar deletar livro inexistente")
+    public void deleteInvalidBookTest() {
+        Book book = null;
+
+        assertThrows(IllegalArgumentException.class, () -> service.deleteById(book));
+
+        verify(repository, never()).delete(book);
+    }
+
+    @Test
+    @DisplayName("Deve alterar um book pelo id")
+    public void updateBookTest() {
+        Book book = oneBook().withId(1).build();
+
+        doReturn(book).when(repository).save(book);
+        assertDoesNotThrow(() -> service.update(book));
+    }
+
+    @Test
+    @DisplayName("Deve ocorrer erro ao tentar atualizar livro inexistente")
+    public void updateInvalidBookTest() {
+        Book book = null;
+
+        assertThrows(IllegalArgumentException.class, () -> service.update(book));
+
+        verify(repository, never()).save(book);
     }
 
 }

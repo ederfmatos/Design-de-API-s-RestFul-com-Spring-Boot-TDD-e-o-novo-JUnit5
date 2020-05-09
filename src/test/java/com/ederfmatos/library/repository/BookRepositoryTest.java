@@ -54,8 +54,8 @@ public class BookRepositoryTest {
     }
 
     @Test
-    @DisplayName("Deve retornar um libro pelo id")
-    public void shoulReturnBook() {
+    @DisplayName("Deve retornar um livro pelo id")
+    public void shouldReturnBook() {
         Book book = oneBook().build();
 
         entityManager.persist(book);

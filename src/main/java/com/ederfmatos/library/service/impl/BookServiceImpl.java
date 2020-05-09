@@ -32,12 +32,20 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void deleteById(Book book) {
+        if(book == null) {
+            throw new IllegalArgumentException("Book is required");
+        }
 
+        repository.delete(book);
     }
 
     @Override
     public void update(Book book) {
+        if(book == null) {
+            throw new IllegalArgumentException("Book is required");
+        }
 
+        repository.save(book);
     }
 
 }
