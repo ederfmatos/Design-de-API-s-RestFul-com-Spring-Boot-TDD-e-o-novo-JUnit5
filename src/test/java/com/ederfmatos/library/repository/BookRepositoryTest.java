@@ -65,4 +65,45 @@ public class BookRepositoryTest {
         assertThat(foundBook.isPresent()).isTrue();
     }
 
+    @Test
+    @DisplayName("Deve salvar um livro")
+    public void saveBooktest() {
+        Book book = oneBook().build();
+
+        book = repository.save(book);
+
+        assertThat(book.getId()).isNotNull();
+    }
+
+    @Test
+    @DisplayName("Deve deletar um livro")
+    public void shouldDeleteBook() {
+        Book book = oneBook().build();
+
+        entityManager.persist(book);
+
+        Optional<Book> foundBook = repository.findById(book.getId());
+        assertThat(foundBook.isPresent()).isTrue();
+
+        repository.delete(foundBook.get());
+
+        foundBook = repository.findById(book.getId());
+        assertThat(foundBook.isPresent()).isFalse();
+    }
+
+    @Test
+    @DisplayName("Deve deletar um livro")
+    public void shouldUpdateBook() {
+        Book book = oneBook().withAuthor("Author 1").build();
+
+        entityManager.persist(book);
+
+        book.setAuthor("Author 2");
+        repository.save(book);
+
+        Book savedBook = repository.findById(book.getId()).get();
+
+        assertThat(savedBook.getAuthor()).isEqualTo(book.getAuthor());
+    }
+
 }
