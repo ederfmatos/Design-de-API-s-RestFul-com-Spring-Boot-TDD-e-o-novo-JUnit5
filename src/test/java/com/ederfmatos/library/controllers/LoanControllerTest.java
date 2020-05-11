@@ -1,6 +1,7 @@
 package com.ederfmatos.library.controllers;
 
 import com.ederfmatos.library.bean.loan.LoanDTO;
+import com.ederfmatos.library.controller.LoanController;
 import com.ederfmatos.library.model.Book;
 import com.ederfmatos.library.model.Loan;
 import com.ederfmatos.library.service.BookService;
@@ -26,8 +27,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
@@ -57,9 +57,9 @@ public class LoanControllerTest {
                 .withId(1)
                 .build();
 
-        Loan loan = oneLoan().withBook(book).build();
+        Loan loan = oneLoan().withId(1).withBook(book).build();
 
-        given(bookService.getBookByIsbn(loanDto.getIsbn())).willReturn(Optional.of(book));
+        given(bookService.getBookByIsbn(any(String.class))).willReturn(Optional.of(book));
 
         given(loanService.save(any(Loan.class))).willReturn(loan);
 
@@ -71,7 +71,7 @@ public class LoanControllerTest {
         mock
                 .perform(request)
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("id").value(1));
+                .andExpect(content().string("1"));
     }
 
 }
