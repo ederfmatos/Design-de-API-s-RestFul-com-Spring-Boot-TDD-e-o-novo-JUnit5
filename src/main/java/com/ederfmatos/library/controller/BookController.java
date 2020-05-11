@@ -7,6 +7,9 @@ import com.ederfmatos.library.exception.BusinessException;
 import com.ederfmatos.library.lib.bean.ApiErrors;
 import com.ederfmatos.library.model.Book;
 import com.ederfmatos.library.service.BookService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -14,8 +17,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.validation.Valid;
+import java.util.List;
 
 import static com.ederfmatos.library.lib.LibraryMapper.getMapper;
+import static java.util.stream.Collectors.toList;
 
 @RestController
 @RequestMapping("/books")
@@ -42,6 +47,16 @@ public class BookController {
                 .getById(id)
                 .map(book -> getMapper().map(book, BookGetBean.class))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping
+    public Page<BookGetBean> find(BookGetBean book, Pageable pageRequest) {
+        Book filter = getMapper().map(book, Book.class);
+        Page<Book> result = service.find(filter, pageRequest);
+
+        List<BookGetBean> books = result.getContent().stream().map(entity -> getMapper().map(entity, BookGetBean.class)).collect(toList());
+
+        return new PageImpl<>(books, pageRequest, result.getTotalElements());
     }
 
     @DeleteMapping("/{id}")
