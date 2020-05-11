@@ -1,4 +1,4 @@
-package com.ederfmatos.library.bean;
+package com.ederfmatos.library.bean.book;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,17 +11,11 @@ import javax.validation.constraints.NotEmpty;
 @NoArgsConstructor
 @Data
 @Builder
-public class BookUpdateBean {
+public class BookGetBean {
 
     private long id;
-
-    @NotEmpty
     private String title;
-
-    @NotEmpty
     private String author;
-
-    @NotEmpty
     private String isbn;
 
 }

@@ -1,7 +1,8 @@
 package com.ederfmatos.library.controllers;
 
-import com.ederfmatos.library.bean.BookPersistBean;
+import com.ederfmatos.library.bean.book.BookPersistBean;
 import com.ederfmatos.library.builder.BookBuilder;
+import com.ederfmatos.library.controller.BookController;
 import com.ederfmatos.library.exception.BusinessException;
 import com.ederfmatos.library.model.Book;
 import com.ederfmatos.library.service.BookService;
@@ -37,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-@WebMvcTest
+@WebMvcTest(controllers = BookController.class)
 @AutoConfigureMockMvc
 public class BookControllerTest {
 

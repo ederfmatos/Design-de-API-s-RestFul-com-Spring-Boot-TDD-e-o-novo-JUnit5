@@ -1,8 +1,8 @@
 package com.ederfmatos.library.controller;
 
-import com.ederfmatos.library.bean.BookGetBean;
-import com.ederfmatos.library.bean.BookPersistBean;
-import com.ederfmatos.library.bean.BookUpdateBean;
+import com.ederfmatos.library.bean.book.BookGetBean;
+import com.ederfmatos.library.bean.book.BookPersistBean;
+import com.ederfmatos.library.bean.book.BookUpdateBean;
 import com.ederfmatos.library.exception.BusinessException;
 import com.ederfmatos.library.lib.bean.ApiErrors;
 import com.ederfmatos.library.model.Book;
