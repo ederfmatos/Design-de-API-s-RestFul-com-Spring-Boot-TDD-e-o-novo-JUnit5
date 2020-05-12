@@ -133,11 +133,9 @@ public class BookServiceTest {
     @Test
     @DisplayName("Deve ocorrer erro ao tentar atualizar livro inexistente")
     public void updateInvalidBookTest() {
-        Book book = null;
+        assertThrows(IllegalArgumentException.class, () -> service.update(null));
 
-        assertThrows(IllegalArgumentException.class, () -> service.update(book));
-
-        verify(repository, never()).save(book);
+        verify(repository, never()).save(null);
     }
 
     @Test
