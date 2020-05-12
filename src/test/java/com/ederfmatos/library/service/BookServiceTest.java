@@ -30,6 +30,7 @@ import static org.mockito.Mockito.*;
 @ActiveProfiles("test")
 public class BookServiceTest {
 
+    @MockBean
     private BookService service;
 
     @MockBean
@@ -156,6 +157,24 @@ public class BookServiceTest {
         assertThat(result.getContent()).isEqualTo(books);
         assertThat(result.getPageable().getPageNumber()).isEqualTo(0);
         assertThat(result.getPageable().getPageSize()).isEqualTo(10);
+    }
+
+    @Test
+    @DisplayName("Deve obter um livro pelo isbn")
+    public void getBookByIsbnTest() {
+        final String isbn = "123123";
+
+        Book book = oneBook().withId(1).withIsbn(isbn).build();
+
+        when(service.getBookByIsbn(anyString())).thenReturn(Optional.of(book));
+
+        Optional<Book> foundBook = service.getBookByIsbn(isbn);
+
+        assertThat(foundBook.isPresent()).isTrue();
+        assertThat(foundBook.get().getId()).isEqualTo(book.getId());
+        assertThat(foundBook.get().getIsbn()).isEqualTo(isbn);
+
+        verify(repository, times(1)).findByIsbn(isbn);
     }
 
 }
