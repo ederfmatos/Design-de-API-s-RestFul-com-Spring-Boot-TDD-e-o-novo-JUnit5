@@ -3,16 +3,12 @@ package com.ederfmatos.library.controller;
 import com.ederfmatos.library.bean.book.BookGetBean;
 import com.ederfmatos.library.bean.book.BookPersistBean;
 import com.ederfmatos.library.bean.book.BookUpdateBean;
-import com.ederfmatos.library.exception.BusinessException;
-import com.ederfmatos.library.lib.bean.ApiErrors;
 import com.ederfmatos.library.model.Book;
 import com.ederfmatos.library.service.BookService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -80,19 +76,6 @@ public class BookController {
                     return getMapper().map(book, BookGetBean.class);
                 })
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-    }
-
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrors handleValidationExceptions(MethodArgumentNotValidException exception) {
-        BindingResult bindingResult = exception.getBindingResult();
-        return new ApiErrors(bindingResult);
-    }
-
-    @ExceptionHandler(BusinessException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiErrors handleBusinessException(BusinessException exception) {
-        return new ApiErrors(exception);
     }
 
 }

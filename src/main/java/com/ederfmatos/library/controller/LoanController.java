@@ -8,6 +8,7 @@ import com.ederfmatos.library.service.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 
@@ -24,17 +25,17 @@ public class LoanController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public long create(@RequestBody LoanDTO loanDTO) {
-        Book book = bookService.getBookByIsbn(loanDTO.getIsbn()).get();
+        return bookService.getBookByIsbn(loanDTO.getIsbn())
+                .map(book -> {
+                    Loan loan = Loan.builder()
+                            .book(book)
+                            .customer(loanDTO.getCustomer())
+                            .timestamp(LocalDateTime.now())
+                            .build();
 
-        Loan loan = Loan.builder()
-                .book(book)
-                .customer(loanDTO.getCustomer())
-                .timestamp(LocalDateTime.now())
-                .build();
-
-        loan = loanService.save(loan);
-        System.out.println(loan);
-        return loan.getId();
+                    loan = loanService.save(loan);
+                    return loan.getId();
+                }).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Book not found for this isbn"));
     }
 
 

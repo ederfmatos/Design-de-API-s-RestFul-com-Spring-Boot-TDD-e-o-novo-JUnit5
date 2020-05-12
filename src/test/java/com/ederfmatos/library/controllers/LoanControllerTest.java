@@ -23,6 +23,7 @@ import java.util.Optional;
 import static com.ederfmatos.library.builder.BookBuilder.oneBook;
 import static com.ederfmatos.library.builder.LoanBuilder.oneLoan;
 import static com.ederfmatos.library.builder.LoanDTOBuilder.oneLoanDTO;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
@@ -72,6 +73,25 @@ public class LoanControllerTest {
                 .perform(request)
                 .andExpect(status().isCreated())
                 .andExpect(content().string("1"));
+    }
+
+    @Test
+    @DisplayName("Deve lançar erro ao tentar fazer emprestimo de um livro inexistente")
+    public void createInvalidLoanTest() throws Exception {
+        String json = oneLoanDTO().inJson();
+
+        given(bookService.getBookByIsbn(any(String.class))).willReturn(Optional.empty());
+
+        MockHttpServletRequestBuilder request = post(LOAN_ROUTE)
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .content(json);
+
+        mock
+                .perform(request)
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("errors", hasSize(1)))
+                .andExpect(jsonPath("errors[0]").value("Book not found for this isbn"));
     }
 
 }

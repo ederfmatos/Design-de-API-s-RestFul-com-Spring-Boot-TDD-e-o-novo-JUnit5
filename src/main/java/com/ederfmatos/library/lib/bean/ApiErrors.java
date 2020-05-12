@@ -3,6 +3,7 @@ package com.ederfmatos.library.lib.bean;
 import com.ederfmatos.library.exception.BusinessException;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -22,5 +23,9 @@ public class ApiErrors {
 
     public ApiErrors(BusinessException exception) {
         this.errors = singletonList(exception.getMessage());
+    }
+
+    public ApiErrors(ResponseStatusException exception) {
+        this.errors = singletonList(exception.getReason());
     }
 }
