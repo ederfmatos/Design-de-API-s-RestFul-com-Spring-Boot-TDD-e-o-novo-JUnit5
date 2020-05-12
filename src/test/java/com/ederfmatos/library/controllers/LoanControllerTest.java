@@ -1,6 +1,7 @@
 package com.ederfmatos.library.controllers;
 
 import com.ederfmatos.library.bean.loan.LoanDTO;
+import com.ederfmatos.library.bean.loan.LoanFilterDTO;
 import com.ederfmatos.library.bean.loan.LoanReturnedDTO;
 import com.ederfmatos.library.controller.LoanController;
 import com.ederfmatos.library.exception.BusinessException;
@@ -13,12 +14,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.BDDMockito;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -29,14 +31,14 @@ import java.util.Optional;
 import static com.ederfmatos.library.builder.BookBuilder.oneBook;
 import static com.ederfmatos.library.builder.LoanBuilder.oneLoan;
 import static com.ederfmatos.library.builder.LoanDTOBuilder.oneLoanDTO;
+import static java.util.Collections.singletonList;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(SpringExtension.class)
@@ -176,6 +178,29 @@ public class LoanControllerTest {
                 .andExpect(status().isNotFound());
 
         verify(loanService, never()).update(any(Loan.class));
+    }
+
+    @Test
+    @DisplayName("Deve filtrar empréstimos")
+    public void findLoanTest() throws Exception {
+        final long id = 1;
+
+        Loan loan = oneLoan().withId(id).build();
+
+        given(loanService.find(any(LoanFilterDTO.class), any(Pageable.class)))
+                .willReturn(new PageImpl<>(singletonList(loan), PageRequest.of(0, 100), 1));
+
+        String queryParams = String.format("?isbn=%s&customer=%s&page=0&size=100", loan.getBook().getIsbn(), loan.getCustomer());
+
+        MockHttpServletRequestBuilder request = get(LOAN_ROUTE.concat(queryParams))
+                .accept(APPLICATION_JSON);
+        mock
+                .perform(request)
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("content", hasSize(1)))
+                .andExpect(jsonPath("totalElements").value(1))
+                .andExpect(jsonPath("pageable.pageSize").value(100))
+                .andExpect(jsonPath("pageable.pageNumber").value(0));
     }
 
 }

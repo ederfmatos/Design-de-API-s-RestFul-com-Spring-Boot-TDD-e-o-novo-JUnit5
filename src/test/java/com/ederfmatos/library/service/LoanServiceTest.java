@@ -93,7 +93,7 @@ public class LoanServiceTest {
         Loan loan = oneLoan().withId(1).returned().build();
 
         doReturn(loan).when(repository).save(loan);
-        
+
         Loan updatedLoan = service.update(loan);
         assertThat(updatedLoan.isReturned()).isTrue();
 
