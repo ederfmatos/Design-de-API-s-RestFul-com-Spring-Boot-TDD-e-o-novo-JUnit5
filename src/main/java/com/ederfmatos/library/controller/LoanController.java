@@ -1,7 +1,6 @@
 package com.ederfmatos.library.controller;
 
 import com.ederfmatos.library.bean.loan.LoanDTO;
-import com.ederfmatos.library.model.Book;
 import com.ederfmatos.library.model.Loan;
 import com.ederfmatos.library.service.BookService;
 import com.ederfmatos.library.service.LoanService;
@@ -10,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @RestController
 @RequestMapping("/loans")
@@ -30,7 +29,7 @@ public class LoanController {
                     Loan loan = Loan.builder()
                             .book(book)
                             .customer(loanDTO.getCustomer())
-                            .timestamp(LocalDateTime.now())
+                            .timestamp(LocalDate.now())
                             .build();
 
                     loan = loanService.save(loan);

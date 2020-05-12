@@ -40,7 +40,7 @@ public class LoanServiceTest {
                 .build();
 
         when(repository.save(loan)).thenReturn(oneLoan().withId(1).build());
-        when(repository.existsByBookAndReturned(any(Book.class))).thenReturn(false);
+        when(repository.existsByBookAndReturnedFalse(any(Book.class))).thenReturn(false);
 
         Loan savedLoan = service.save(loan);
 
@@ -56,7 +56,7 @@ public class LoanServiceTest {
                 .withId(1)
                 .build();
 
-        when(repository.existsByBookAndReturned(any(Book.class))).thenReturn(true);
+        when(repository.existsByBookAndReturnedFalse(any(Book.class))).thenReturn(true);
 
         Throwable exception = catchThrowable(() -> service.save(loan));
 

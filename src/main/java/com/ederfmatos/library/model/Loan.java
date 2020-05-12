@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -20,14 +20,17 @@ public class Loan {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @Column
     private String customer;
 
-    @JoinColumn
+    @JoinColumn(name = "book_id")
     @ManyToOne
     private Book book;
 
-    private LocalDateTime timestamp;
+    @Column
+    private LocalDate timestamp;
 
+    @Column
     private boolean returned;
 
 }
