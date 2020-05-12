@@ -1,5 +1,6 @@
 package com.ederfmatos.library.service;
 
+import com.ederfmatos.library.bean.loan.LoanFilterDTO;
 import com.ederfmatos.library.exception.BusinessException;
 import com.ederfmatos.library.model.Book;
 import com.ederfmatos.library.model.Loan;
@@ -10,9 +11,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.ederfmatos.library.builder.LoanBuilder.oneLoan;
@@ -98,6 +104,27 @@ public class LoanServiceTest {
         assertThat(updatedLoan.isReturned()).isTrue();
 
         verify(repository, times(1)).save(loan);
+    }
+
+    @Test
+    @DisplayName("Deve filtrar emprestimos pelas propriedades")
+    public void findLoanTest() {
+        Loan loan = oneLoan().build();
+
+        List<Loan> loans = List.of(loan);
+
+        PageRequest pageRequest = PageRequest.of(0, 10);
+        Page<Loan> page = new PageImpl<Loan>(loans, pageRequest, 1);
+        doReturn(page).when(repository).findByBookIsbnOrCustomer(anyString(), anyString(), any(PageRequest.class));
+
+        LoanFilterDTO loanFilterDTO = new LoanFilterDTO(loan.getCustomer(), loan.getBook().getIsbn());
+
+        Page<Loan> result = service.find(loanFilterDTO, pageRequest);
+
+        assertThat(result.getTotalElements()).isEqualTo(1);
+        assertThat(result.getContent()).isEqualTo(loans);
+        assertThat(result.getPageable().getPageNumber()).isEqualTo(0);
+        assertThat(result.getPageable().getPageSize()).isEqualTo(10);
     }
 
 }
