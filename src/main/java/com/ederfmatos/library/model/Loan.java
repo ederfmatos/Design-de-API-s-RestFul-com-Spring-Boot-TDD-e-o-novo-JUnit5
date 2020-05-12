@@ -28,4 +28,6 @@ public class Loan {
 
     private LocalDateTime timestamp;
 
+    private boolean returned;
+
 }

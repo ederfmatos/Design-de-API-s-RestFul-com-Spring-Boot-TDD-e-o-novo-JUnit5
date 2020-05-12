@@ -30,7 +30,6 @@ import static org.mockito.Mockito.*;
 @ActiveProfiles("test")
 public class BookServiceTest {
 
-    @MockBean
     private BookService service;
 
     @MockBean
