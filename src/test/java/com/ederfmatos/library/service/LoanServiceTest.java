@@ -13,6 +13,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.Optional;
+
 import static com.ederfmatos.library.builder.LoanBuilder.oneLoan;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
@@ -64,6 +66,25 @@ public class LoanServiceTest {
         assertThat(exception.getMessage()).isEqualTo("Book already loaned");
 
         verify(repository, never()).save(loan);
+    }
+
+    @Test
+    @DisplayName("Deve buscar um emprestimo pelo id")
+    public void getLoanDetailsTest() {
+        final long id = 10;
+
+        Loan loan = oneLoan().withId(id).build();
+
+        doReturn(Optional.of(loan)).when(repository).findById(id);
+
+        Optional<Loan> foundLoan = service.findById(id);
+
+        assertThat(foundLoan.isPresent()).isTrue();
+        assertThat(foundLoan.get().getId()).isEqualTo(id);
+        assertThat(foundLoan.get().getTimestamp()).isEqualTo(loan.getTimestamp());
+        assertThat(foundLoan.get().getBook()).isEqualTo(loan.getBook());
+        assertThat(foundLoan.get().getCustomer()).isEqualTo(loan.getCustomer());
+        verify(repository, times(1)).findById(id);
     }
 
 }
