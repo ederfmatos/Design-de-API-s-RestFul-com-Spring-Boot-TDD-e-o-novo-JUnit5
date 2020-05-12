@@ -1,6 +1,5 @@
 package com.ederfmatos.library.controller;
 
-import com.ederfmatos.library.bean.book.BookGetBean;
 import com.ederfmatos.library.bean.loan.LoanDTO;
 import com.ederfmatos.library.bean.loan.LoanFilterDTO;
 import com.ederfmatos.library.bean.loan.LoanReturnedDTO;
@@ -10,7 +9,6 @@ import com.ederfmatos.library.service.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -18,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 import static com.ederfmatos.library.lib.LibraryMapper.getMapper;
 import static java.util.stream.Collectors.toList;
@@ -51,11 +50,16 @@ public class LoanController {
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void returnBook(@PathVariable Long id, @RequestBody LoanReturnedDTO dto) {
-        loanService.findById(id).map(loan -> {
+        Optional<Loan> foundLoan = loanService.getById(id);
+        if (foundLoan.isPresent()) {
+            Loan loan = foundLoan.get();
+
             loan.setReturned(dto.isReturned());
             loanService.update(loan);
-            return null;
-        }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Loan not found"));
+            return;
+        }
+
+        throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Loan not found");
     }
 
     @GetMapping

@@ -83,7 +83,7 @@ public class LoanServiceTest {
 
         doReturn(Optional.of(loan)).when(repository).findById(id);
 
-        Optional<Loan> foundLoan = service.findById(id);
+        Optional<Loan> foundLoan = service.getById(id);
 
         assertThat(foundLoan.isPresent()).isTrue();
         assertThat(foundLoan.get().getId()).isEqualTo(id);

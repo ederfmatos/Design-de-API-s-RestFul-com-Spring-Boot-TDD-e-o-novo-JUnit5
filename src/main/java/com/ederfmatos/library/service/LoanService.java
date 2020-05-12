@@ -13,7 +13,7 @@ public interface LoanService {
 
     Loan save(Loan loan);
 
-    Optional<Loan> findById(long id);
+    Optional<Loan> getById(long id);
 
     Loan update(Loan loan);
 

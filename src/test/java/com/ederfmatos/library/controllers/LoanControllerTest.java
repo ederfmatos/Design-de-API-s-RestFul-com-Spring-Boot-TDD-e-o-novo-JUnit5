@@ -121,7 +121,7 @@ public class LoanControllerTest {
                 .withId(1)
                 .build();
 
-        given(bookService.getBookByIsbn(any(String.class))).willReturn(Optional.of(book));
+        given(bookService.getBookByIsbn(anyString())).willReturn(Optional.of(book));
 
         given(loanService.save(any(Loan.class))).willThrow(new BusinessException("Book already loaned"));
 
@@ -144,8 +144,7 @@ public class LoanControllerTest {
         String json = new ObjectMapper().writeValueAsString(loanReturnedDTO);
 
         Loan loan = oneLoan().build();
-
-        given(loanService.findById(1)).willReturn(Optional.of(loan));
+        doReturn(Optional.of(loan)).when(loanService).getById(anyLong());
 
         MockHttpServletRequestBuilder request = patch(LOAN_ROUTE.concat("/1"))
                 .contentType(APPLICATION_JSON)
@@ -166,7 +165,7 @@ public class LoanControllerTest {
 
         String json = new ObjectMapper().writeValueAsString(loanReturnedDTO);
 
-        doReturn(Optional.empty()).when(loanService).findById(anyLong());
+        doReturn(Optional.empty()).when(loanService).getById(anyLong());
 
         MockHttpServletRequestBuilder request = patch(LOAN_ROUTE.concat("/1"))
                 .contentType(APPLICATION_JSON)
