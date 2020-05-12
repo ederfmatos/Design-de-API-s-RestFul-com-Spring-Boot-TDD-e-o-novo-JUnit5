@@ -7,6 +7,8 @@ import com.ederfmatos.library.service.LoanService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class LoanServiceImpl implements LoanService {
 
@@ -24,6 +26,16 @@ public class LoanServiceImpl implements LoanService {
         }
 
         return repository.save(loan);
+    }
+
+    @Override
+    public Optional<Loan> findById(long id) {
+        return Optional.empty();
+    }
+
+    @Override
+    public void update(Loan loan) {
+
     }
 
 }

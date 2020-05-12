@@ -1,6 +1,7 @@
 package com.ederfmatos.library.controller;
 
 import com.ederfmatos.library.bean.loan.LoanDTO;
+import com.ederfmatos.library.bean.loan.LoanReturnedDTO;
 import com.ederfmatos.library.model.Loan;
 import com.ederfmatos.library.service.BookService;
 import com.ederfmatos.library.service.LoanService;
@@ -35,6 +36,14 @@ public class LoanController {
                     loan = loanService.save(loan);
                     return loan.getId();
                 }).orElseThrow(() -> new ResponseStatusException(HttpStatus.BAD_REQUEST, "Book not found for this isbn"));
+    }
+
+    @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void returnBook(@PathVariable long id, @RequestBody LoanReturnedDTO dto) {
+        Loan loan = loanService.findById(id).get();
+        loan.setReturned(dto.isReturned());
+        loanService.update(loan);
     }
 
 

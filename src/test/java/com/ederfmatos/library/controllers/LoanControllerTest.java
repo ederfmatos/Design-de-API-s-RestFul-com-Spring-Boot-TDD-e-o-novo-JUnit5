@@ -1,12 +1,15 @@
 package com.ederfmatos.library.controllers;
 
 import com.ederfmatos.library.bean.loan.LoanDTO;
+import com.ederfmatos.library.bean.loan.LoanReturnedDTO;
 import com.ederfmatos.library.controller.LoanController;
 import com.ederfmatos.library.exception.BusinessException;
 import com.ederfmatos.library.model.Book;
 import com.ederfmatos.library.model.Loan;
 import com.ederfmatos.library.service.BookService;
 import com.ederfmatos.library.service.LoanService;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,8 +29,11 @@ import static com.ederfmatos.library.builder.LoanBuilder.oneLoan;
 import static com.ederfmatos.library.builder.LoanDTOBuilder.oneLoanDTO;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -43,10 +49,15 @@ public class LoanControllerTest {
     MockMvc mock;
 
     @MockBean
-    private BookService bookService;
+    private LoanService loanService;
 
     @MockBean
-    private LoanService loanService;
+    private BookService bookService;
+
+    @BeforeEach
+    public void setup() {
+
+    }
 
     @Test
     @DisplayName("Deve realizar um empréstimo")
@@ -119,6 +130,30 @@ public class LoanControllerTest {
                 .perform(request)
                 .andExpect(jsonPath("errors", hasSize(1)))
                 .andExpect(jsonPath("errors[0]").value("Book already loaned"));
+    }
+
+    @Test
+    @DisplayName("Deve marcar um livro como retornado")
+    public void returnBookTest() throws Exception {
+        LoanReturnedDTO loanReturnedDTO = new LoanReturnedDTO(true);
+
+        String json = new ObjectMapper().writeValueAsString(loanReturnedDTO);
+
+        Loan loan = oneLoan().build();
+//        given(loanService.findById(anyLong())).willReturn(Optional.of(loan));
+
+        doReturn(Optional.of(loan)).when(loanService).findById(anyLong());
+
+        MockHttpServletRequestBuilder request = patch(LOAN_ROUTE.concat("/1"))
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .content(json);
+
+        mock
+                .perform(request)
+                .andExpect(status().isNoContent());
+
+        verify(loanService, times(1)).update(loan);
     }
 
 }
