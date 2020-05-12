@@ -2,6 +2,7 @@ package com.ederfmatos.library.controllers;
 
 import com.ederfmatos.library.bean.loan.LoanDTO;
 import com.ederfmatos.library.controller.LoanController;
+import com.ederfmatos.library.exception.BusinessException;
 import com.ederfmatos.library.model.Book;
 import com.ederfmatos.library.model.Loan;
 import com.ederfmatos.library.service.BookService;
@@ -92,6 +93,32 @@ public class LoanControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("errors", hasSize(1)))
                 .andExpect(jsonPath("errors[0]").value("Book not found for this isbn"));
+    }
+
+    @Test
+    @DisplayName("Deve lançar erro ao tentar fazer emprestimo de um livro inexistente")
+    public void shoundReturnErrorOnTryCreateLoanBookTest() throws Exception {
+        LoanDTO loanDto = oneLoanDTO().build();
+        String json = oneLoanDTO().inJson();
+
+        Book book = oneBook()
+                .withIsbn(loanDto.getIsbn())
+                .withId(1)
+                .build();
+
+        given(bookService.getBookByIsbn(any(String.class))).willReturn(Optional.of(book));
+
+        given(loanService.save(any(Loan.class))).willThrow(new BusinessException("Book already loaned"));
+
+        MockHttpServletRequestBuilder request = post(LOAN_ROUTE)
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .content(json);
+
+        mock
+                .perform(request)
+                .andExpect(jsonPath("errors", hasSize(1)))
+                .andExpect(jsonPath("errors[0]").value("Book already loaned"));
     }
 
 }
