@@ -12,6 +12,6 @@ public interface LoanService {
 
     Optional<Loan> findById(long id);
 
-    void update(Loan loan);
+    Loan update(Loan loan);
 
 }

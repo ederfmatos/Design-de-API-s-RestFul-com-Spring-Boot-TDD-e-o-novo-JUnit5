@@ -87,4 +87,17 @@ public class LoanServiceTest {
         verify(repository, times(1)).findById(id);
     }
 
+    @Test
+    @DisplayName("Deve atualizar um empréstimo")
+    public void updateLoanTest() {
+        Loan loan = oneLoan().withId(1).returned().build();
+
+        doReturn(loan).when(repository).save(loan);
+        
+        Loan updatedLoan = service.update(loan);
+        assertThat(updatedLoan.isReturned()).isTrue();
+
+        verify(repository, times(1)).save(loan);
+    }
+
 }

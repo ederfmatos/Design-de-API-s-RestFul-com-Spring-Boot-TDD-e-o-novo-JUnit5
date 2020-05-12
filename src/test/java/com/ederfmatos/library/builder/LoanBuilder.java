@@ -44,6 +44,11 @@ public class LoanBuilder {
         return this;
     }
 
+    public LoanBuilder returned() {
+        loan.setReturned(true);
+        return this;
+    }
+
     public Loan build() {
         return loan;
     }
