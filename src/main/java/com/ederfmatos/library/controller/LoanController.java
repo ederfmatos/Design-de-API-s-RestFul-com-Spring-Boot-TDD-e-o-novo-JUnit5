@@ -40,10 +40,12 @@ public class LoanController {
 
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void returnBook(@PathVariable long id, @RequestBody LoanReturnedDTO dto) {
-        Loan loan = loanService.findById(id).get();
-        loan.setReturned(dto.isReturned());
-        loanService.update(loan);
+    public void returnBook(@PathVariable Long id, @RequestBody LoanReturnedDTO dto) {
+        loanService.findById(id).map(loan -> {
+            loan.setReturned(dto.isReturned());
+            loanService.update(loan);
+            return null;
+        }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Loan not found"));
     }
 
 

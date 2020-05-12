@@ -13,6 +13,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.BDDMockito;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -140,9 +142,8 @@ public class LoanControllerTest {
         String json = new ObjectMapper().writeValueAsString(loanReturnedDTO);
 
         Loan loan = oneLoan().build();
-//        given(loanService.findById(anyLong())).willReturn(Optional.of(loan));
 
-        doReturn(Optional.of(loan)).when(loanService).findById(anyLong());
+        given(loanService.findById(1)).willReturn(Optional.of(loan));
 
         MockHttpServletRequestBuilder request = patch(LOAN_ROUTE.concat("/1"))
                 .contentType(APPLICATION_JSON)
@@ -154,6 +155,27 @@ public class LoanControllerTest {
                 .andExpect(status().isNoContent());
 
         verify(loanService, times(1)).update(loan);
+    }
+
+    @Test
+    @DisplayName("Deve lançar exceção quando tentar retornar um emprestimo inexistente")
+    public void returnExceptionWhenBookNotFoundBookTest() throws Exception {
+        LoanReturnedDTO loanReturnedDTO = new LoanReturnedDTO(true);
+
+        String json = new ObjectMapper().writeValueAsString(loanReturnedDTO);
+
+        doReturn(Optional.empty()).when(loanService).findById(anyLong());
+
+        MockHttpServletRequestBuilder request = patch(LOAN_ROUTE.concat("/1"))
+                .contentType(APPLICATION_JSON)
+                .accept(APPLICATION_JSON)
+                .content(json);
+
+        mock
+                .perform(request)
+                .andExpect(status().isNotFound());
+
+        verify(loanService, never()).update(any(Loan.class));
     }
 
 }
