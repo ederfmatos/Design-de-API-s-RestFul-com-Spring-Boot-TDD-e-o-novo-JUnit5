@@ -1,20 +1,18 @@
 package com.ederfmatos.library.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "book")
-@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
+@EqualsAndHashCode
 public class Book {
 
     @Id
@@ -31,6 +29,6 @@ public class Book {
     private String isbn;
 
     @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
-    private Set<Loan> loans = new HashSet<>();
+    private List<Loan> loans;
 
 }

@@ -1,19 +1,18 @@
 package com.ederfmatos.library.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
 @Entity
 @Table(name="loans")
+@Getter
+@Setter
+@EqualsAndHashCode
 public class Loan {
 
     @Id
@@ -24,7 +23,7 @@ public class Loan {
     private String customer;
 
     @JoinColumn(name = "book_id")
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private Book book;
 
     @Column

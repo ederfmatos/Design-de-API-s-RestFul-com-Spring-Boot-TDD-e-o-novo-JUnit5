@@ -75,6 +75,7 @@ public class LoanRepositoryTest {
         Loan loan = oneLoan().withDate(LocalDate.now().minusDays(5)).build();
 
         entityManager.persist(loan.getBook());
+
         entityManager.persist(loan);
 
         List<Loan> result = repository.findByDateLessThanTodayAndReturnedFalse(LocalDate.now().minusDays(4));
@@ -87,12 +88,15 @@ public class LoanRepositoryTest {
     public void notFindByLoanDateEqualAndNotReturned() {
         Loan loan = oneLoan().withDate(LocalDate.now()).build();
 
-        entityManager.persist(loan.getBook());
+        Book book = entityManager.persist(loan.getBook());
+
+        loan.setBook(book);
+
         entityManager.persist(loan);
 
         List<Loan> result = repository.findByDateLessThanTodayAndReturnedFalse(LocalDate.now().minusDays(4));
 
-        assertThat(result).isEmpty();
+        assertThat(result).isNullOrEmpty();
     }
 
 }
