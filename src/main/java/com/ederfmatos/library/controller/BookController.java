@@ -3,8 +3,12 @@ package com.ederfmatos.library.controller;
 import com.ederfmatos.library.bean.book.BookGetBean;
 import com.ederfmatos.library.bean.book.BookPersistBean;
 import com.ederfmatos.library.bean.book.BookUpdateBean;
+import com.ederfmatos.library.bean.loan.LoanDTO;
 import com.ederfmatos.library.model.Book;
+import com.ederfmatos.library.model.Loan;
 import com.ederfmatos.library.service.BookService;
+import com.ederfmatos.library.service.LoanService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -20,13 +24,11 @@ import static java.util.stream.Collectors.toList;
 
 @RestController
 @RequestMapping("/books")
+@RequiredArgsConstructor
 public class BookController {
 
     private final BookService service;
-
-    public BookController(BookService service) {
-        this.service = service;
-    }
+    private final LoanService loanService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -43,6 +45,15 @@ public class BookController {
                 .getById(id)
                 .map(book -> getMapper().map(book, BookGetBean.class))
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    }
+
+    @GetMapping("/{id}/loans")
+    public Page<LoanDTO> findLoansByBook(@PathVariable long id, Pageable pageable) {
+        return service.getById(id).map(book -> {
+            Page<Loan> page = loanService.getLoanByBook(book, pageable);
+            List<LoanDTO> loans = page.getContent().stream().map(loan -> getMapper().map(loan, LoanDTO.class)).collect(toList());
+            return new PageImpl<>(loans, pageable, page.getTotalElements());
+        }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @GetMapping

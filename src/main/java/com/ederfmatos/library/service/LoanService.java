@@ -1,6 +1,7 @@
 package com.ederfmatos.library.service;
 
 import com.ederfmatos.library.bean.loan.LoanFilterDTO;
+import com.ederfmatos.library.model.Book;
 import com.ederfmatos.library.model.Loan;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,5 +19,7 @@ public interface LoanService {
     Loan update(Loan loan);
 
     Page<Loan> find(LoanFilterDTO loan, Pageable pageable);
+
+    Page<Loan> getLoanByBook(Book book, Pageable pageable);
 
 }

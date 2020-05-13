@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "book")
@@ -27,5 +29,8 @@ public class Book {
 
     @Column
     private String isbn;
+
+    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
+    private Set<Loan> loans = new HashSet<>();
 
 }

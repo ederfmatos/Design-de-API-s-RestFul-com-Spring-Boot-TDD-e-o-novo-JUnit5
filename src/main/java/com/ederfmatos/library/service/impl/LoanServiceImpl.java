@@ -2,6 +2,7 @@ package com.ederfmatos.library.service.impl;
 
 import com.ederfmatos.library.bean.loan.LoanFilterDTO;
 import com.ederfmatos.library.exception.BusinessException;
+import com.ederfmatos.library.model.Book;
 import com.ederfmatos.library.model.Loan;
 import com.ederfmatos.library.repository.LoanRepository;
 import com.ederfmatos.library.service.LoanService;
@@ -44,6 +45,11 @@ public class LoanServiceImpl implements LoanService {
     @Override
     public Page<Loan> find(LoanFilterDTO loan, Pageable pageable) {
         return repository.findByBookIsbnOrCustomer(loan.getIsbn(), loan.getCustomer(), pageable);
+    }
+
+    @Override
+    public Page<Loan> getLoanByBook(Book book, Pageable pageable) {
+        return repository.findByBook(book, pageable);
     }
 
 }
