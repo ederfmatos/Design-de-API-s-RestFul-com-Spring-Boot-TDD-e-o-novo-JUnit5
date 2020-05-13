@@ -87,7 +87,7 @@ public class LoanServiceTest {
 
         assertThat(foundLoan.isPresent()).isTrue();
         assertThat(foundLoan.get().getId()).isEqualTo(id);
-        assertThat(foundLoan.get().getTimestamp()).isEqualTo(loan.getTimestamp());
+        assertThat(foundLoan.get().getDate()).isEqualTo(loan.getDate());
         assertThat(foundLoan.get().getBook()).isEqualTo(loan.getBook());
         assertThat(foundLoan.get().getCustomer()).isEqualTo(loan.getCustomer());
         verify(repository, times(1)).findById(id);

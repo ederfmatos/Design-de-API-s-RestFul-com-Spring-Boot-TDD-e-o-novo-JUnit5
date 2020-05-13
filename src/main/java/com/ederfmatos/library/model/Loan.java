@@ -28,7 +28,7 @@ public class Loan {
     private Book book;
 
     @Column
-    private LocalDate timestamp;
+    private LocalDate date;
 
     @Column
     private boolean returned;

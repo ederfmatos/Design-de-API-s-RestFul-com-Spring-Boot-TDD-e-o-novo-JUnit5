@@ -14,6 +14,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import static com.ederfmatos.library.builder.BookBuilder.oneBook;
 import static com.ederfmatos.library.builder.LoanBuilder.oneLoan;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -64,6 +67,32 @@ public class LoanRepositoryTest {
         assertThat(result.getPageable().getPageSize()).isEqualTo(10);
         assertThat(result.getPageable().getPageNumber()).isEqualTo(0);
         assertThat(result.getTotalElements()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("Deve obter emprestimos onde a data de emprestimo for menor que tres dias atras e não retornados")
+    public void findByLoanDateLessAndNotReturned() {
+        Loan loan = oneLoan().withDate(LocalDate.now().minusDays(5)).build();
+
+        entityManager.persist(loan.getBook());
+        entityManager.persist(loan);
+
+        List<Loan> result = repository.findByDateLessThanTodayAndReturnedFalse(LocalDate.now().minusDays(4));
+
+        assertThat(result).hasSize(1).contains(loan);
+    }
+
+    @Test
+    @DisplayName("Não deve obter emprestimos onde a data de emprestimo for igual à hoje e não retornados")
+    public void notFindByLoanDateEqualAndNotReturned() {
+        Loan loan = oneLoan().withDate(LocalDate.now()).build();
+
+        entityManager.persist(loan.getBook());
+        entityManager.persist(loan);
+
+        List<Loan> result = repository.findByDateLessThanTodayAndReturnedFalse(LocalDate.now().minusDays(4));
+
+        assertThat(result).isEmpty();
     }
 
 }

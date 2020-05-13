@@ -39,7 +39,7 @@ public class LoanController {
                     Loan loan = Loan.builder()
                             .book(book)
                             .customer(loanDTO.getCustomer())
-                            .timestamp(LocalDate.now())
+                            .date(LocalDate.now())
                             .build();
 
                     loan = loanService.save(loan);

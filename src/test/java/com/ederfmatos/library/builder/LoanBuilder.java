@@ -21,7 +21,7 @@ public class LoanBuilder {
         loan = Loan.builder()
                 .book(oneBook().build())
                 .customer("Customer")
-                .timestamp(LocalDate.now())
+                .date(LocalDate.now())
                 .build();
     }
 
@@ -41,6 +41,11 @@ public class LoanBuilder {
 
     public LoanBuilder withBook(Book book) {
         loan.setBook(book);
+        return this;
+    }
+
+    public LoanBuilder withDate(LocalDate date) {
+        loan.setDate(date);
         return this;
     }
 
