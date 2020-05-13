@@ -7,6 +7,20 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  mail:
+    protocol: smtp
+    host: smtp.mailtrap.io
+    port: 2525
+    username: 1cc6c6b885ebe7
+    password: e9729607a6fcb4
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
 application:
-  main:
-    late:Atenção você tem empréstimo(s) atrasado(s), por favor devolva o livro
+  mail:
+    late: Atenção você tem empréstimo(s) atrasado(s), por favor devolva o livro
+    remetent: ederfmatos@gmail.com

@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @Service
 public class ScheduleService {
 
-    private static final String CRON_LATE_LOANS = "0 0 0 1/1 * ?";
+    private static final String CRON_LATE_LOANS = "0 49 18 1/1 * ?";
 
     @Autowired
     private LoanService loanService;
@@ -22,7 +22,7 @@ public class ScheduleService {
     @Autowired
     private EmailService emailService;
 
-    @Value("${application.main.late}")
+    @Value("${application.mail.late}")
     private String message;
 
     @Scheduled(cron = CRON_LATE_LOANS)
@@ -31,7 +31,7 @@ public class ScheduleService {
 
         List<String> emails = lateLoans.stream().map(Loan::getCustomerEmail).collect(Collectors.toList());
 
-        emailService.sendMails(emails);
+        emailService.sendMails(message, emails);
     }
 
 }
