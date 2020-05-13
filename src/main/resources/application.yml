@@ -7,3 +7,6 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+application:
+  main:
+    late:Atenção você tem empréstimo(s) atrasado(s), por favor devolva o livro
