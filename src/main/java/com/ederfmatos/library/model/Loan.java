@@ -33,4 +33,7 @@ public class Loan {
     @Column
     private boolean returned;
 
+    @Column(name = "customer_email")
+    private String customerEmail;
+
 }

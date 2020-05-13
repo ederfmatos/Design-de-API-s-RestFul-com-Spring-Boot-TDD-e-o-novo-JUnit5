@@ -13,7 +13,7 @@ public class LoanDTOBuilder {
     }
 
     private void setDefaultAttributes() {
-        loan = LoanDTO.builder().isbn("123123").customer("Customer").build();
+        loan = LoanDTO.builder().isbn("123123").email("ederfmatos@gmail.com").customer("Customer").build();
     }
 
     public static LoanDTOBuilder oneLoanDTO() {

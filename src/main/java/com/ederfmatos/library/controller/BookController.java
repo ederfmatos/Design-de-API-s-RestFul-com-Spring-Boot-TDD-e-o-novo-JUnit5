@@ -8,7 +8,7 @@ import com.ederfmatos.library.model.Book;
 import com.ederfmatos.library.model.Loan;
 import com.ederfmatos.library.service.BookService;
 import com.ederfmatos.library.service.LoanService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -24,11 +24,13 @@ import static java.util.stream.Collectors.toList;
 
 @RestController
 @RequestMapping("/books")
-@RequiredArgsConstructor
 public class BookController {
 
-    private final BookService service;
-    private final LoanService loanService;
+    @Autowired
+    private BookService service;
+
+    @Autowired
+    private LoanService loanService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
