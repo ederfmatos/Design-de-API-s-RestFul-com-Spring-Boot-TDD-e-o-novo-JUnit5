@@ -100,7 +100,7 @@ public class BookController {
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @ApiOperation("UPDATE A BOOK")
-    public BookGetBean update(@PathVariable long id, @RequestBody BookUpdateBean bean) {
+    public BookGetBean update(@PathVariable long id, @Valid @RequestBody BookUpdateBean bean) {
         return service
                 .getById(id)
                 .map(book -> {

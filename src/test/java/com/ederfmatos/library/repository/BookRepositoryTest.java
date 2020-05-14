@@ -15,6 +15,7 @@ import java.util.Optional;
 
 import static com.ederfmatos.library.builder.BookBuilder.oneBook;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase.Replace.NONE;
 
 @ExtendWith(SpringExtension.class)
@@ -101,7 +102,14 @@ public class BookRepositoryTest {
         book.setAuthor("Author 2");
         repository.save(book);
 
-        Book savedBook = repository.findById(book.getId()).get();
+        Optional<Book> foundBook = repository.findById(book.getId());
+
+        if(foundBook.isEmpty()) {
+            fail();
+            return;
+        }
+
+        Book savedBook = foundBook.get();
 
         assertThat(savedBook.getAuthor()).isEqualTo(book.getAuthor());
     }
