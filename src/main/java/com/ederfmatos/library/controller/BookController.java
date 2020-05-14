@@ -12,6 +12,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -29,6 +30,7 @@ import static java.util.stream.Collectors.toList;
 @RestController
 @RequestMapping("/books")
 @Api("Book API")
+@Slf4j
 public class BookController {
 
     @Autowired
@@ -41,6 +43,8 @@ public class BookController {
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation("CREATE A BOOK")
     public BookPersistBean create(@RequestBody @Valid BookPersistBean in) {
+        log.info("Create a book for isbn: {}", in.getIsbn());
+
         Book entity = getMapper().map(in, Book.class);
         entity = service.save(entity);
 
@@ -50,6 +54,8 @@ public class BookController {
     @GetMapping("/{id}")
     @ApiOperation("FIND A BOOK DETAILS BY ID")
     public BookGetBean findById(@PathVariable long id) {
+        log.info("Obtaining id for book id: {}", id);
+
         return service
                 .getById(id)
                 .map(book -> getMapper().map(book, BookGetBean.class))
@@ -84,6 +90,7 @@ public class BookController {
             @ApiResponse(code = 204, message = "Book successfully deleted")
     })
     public void deleteById(@PathVariable long id) {
+        log.info("Deleting book of id: {}", id);
         Book book = service.getById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
