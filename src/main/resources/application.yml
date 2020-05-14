@@ -1,4 +1,8 @@
 spring:
+  boot:
+    admin:
+      client:
+        url: http://localhost:8081/
   datasource:
     url: jdbc:postgresql://localhost:5432/library
     username: postgres
