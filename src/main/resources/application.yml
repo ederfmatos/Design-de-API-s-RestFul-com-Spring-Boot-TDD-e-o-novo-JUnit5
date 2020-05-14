@@ -24,3 +24,9 @@ application:
   mail:
     late: Atenção você tem empréstimo(s) atrasado(s), por favor devolva o livro
     remetent: ederfmatos@gmail.com
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
