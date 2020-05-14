@@ -113,11 +113,9 @@ public class BookServiceTest {
     @Test
     @DisplayName("Deve ocorrer um erro ao tentar deletar livro inexistente")
     public void deleteInvalidBookTest() {
-        Book book = null;
+        assertThrows(IllegalArgumentException.class, () -> service.deleteById(null));
 
-        assertThrows(IllegalArgumentException.class, () -> service.deleteById(book));
-
-        verify(repository, never()).delete(book);
+        verify(repository, never()).delete(any(Book.class));
     }
 
     @Test
@@ -134,7 +132,7 @@ public class BookServiceTest {
     public void updateInvalidBookTest() {
         assertThrows(IllegalArgumentException.class, () -> service.update(null));
 
-        verify(repository, never()).save(null);
+        verify(repository, never()).save(any(Book.class));
     }
 
     @Test
@@ -145,7 +143,7 @@ public class BookServiceTest {
         List<Book> books = List.of(book);
 
         PageRequest pageRequest = PageRequest.of(0, 10);
-        Page<Book> page = new PageImpl<Book>(books, pageRequest, 1);
+        Page<Book> page = new PageImpl<>(books, pageRequest, 1);
         doReturn(page).when(repository).findAll(any(Example.class), any(PageRequest.class));
 
         Page<Book> result = service.find(book, pageRequest);
