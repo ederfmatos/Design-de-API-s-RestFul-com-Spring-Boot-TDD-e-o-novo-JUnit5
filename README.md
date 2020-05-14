@@ -1,5 +1,7 @@
 # Design de APIs RestFul com Spring Boot TDD e o novo JUnit5
 
+[![Build Status](https://travis-ci.com/ederfmatos/Design-de-APIs-RestFul-com-Spring-Boot-TDD-e-o-novo-JUnit5.svg?branch=master)](https://travis-ci.com/ederfmatos/Design-de-APIs-RestFul-com-Spring-Boot-TDD-e-o-novo-JUnit5)
+
 Repositório com as anotações e aplicação desenvolvida e testada acompanhando o curso "Design de API's RestFul com Spring Boot, TDD e o novo JUnit5", ministrado pelo professor [Dougllas Souza](https://www.udemy.com/user/dougllas-sousa/)  na Udemy.
 
 Link do curso: [Udemy](https://www.udemy.com/course/design-de-apis-restful-com-tdd-spring-boot-e-junit-5/)
