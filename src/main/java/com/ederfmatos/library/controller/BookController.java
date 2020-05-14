@@ -8,6 +8,10 @@ import com.ederfmatos.library.model.Book;
 import com.ederfmatos.library.model.Loan;
 import com.ederfmatos.library.service.BookService;
 import com.ederfmatos.library.service.LoanService;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -24,6 +28,7 @@ import static java.util.stream.Collectors.toList;
 
 @RestController
 @RequestMapping("/books")
+@Api("Book API")
 public class BookController {
 
     @Autowired
@@ -34,6 +39,7 @@ public class BookController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @ApiOperation("CREATE A BOOK")
     public BookPersistBean create(@RequestBody @Valid BookPersistBean in) {
         Book entity = getMapper().map(in, Book.class);
         entity = service.save(entity);
@@ -42,6 +48,7 @@ public class BookController {
     }
 
     @GetMapping("/{id}")
+    @ApiOperation("FIND A BOOK DETAILS BY ID")
     public BookGetBean findById(@PathVariable long id) {
         return service
                 .getById(id)
@@ -50,6 +57,7 @@ public class BookController {
     }
 
     @GetMapping("/{id}/loans")
+    @ApiOperation("FIND LOANS")
     public Page<LoanDTO> findLoansByBook(@PathVariable long id, Pageable pageable) {
         return service.getById(id).map(book -> {
             Page<Loan> page = loanService.getLoanByBook(book, pageable);
@@ -59,6 +67,7 @@ public class BookController {
     }
 
     @GetMapping
+    @ApiOperation("FIND BOOK BY PARAMS")
     public Page<BookGetBean> find(BookGetBean book, Pageable pageRequest) {
         Book filter = getMapper().map(book, Book.class);
         Page<Book> result = service.find(filter, pageRequest);
@@ -70,6 +79,10 @@ public class BookController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiOperation("DELETE A BOOK BY ID")
+    @ApiResponses({
+            @ApiResponse(code = 204, message = "Book successfully deleted")
+    })
     public void deleteById(@PathVariable long id) {
         Book book = service.getById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -79,6 +92,7 @@ public class BookController {
 
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @ApiOperation("UPDATE A BOOK")
     public BookGetBean update(@PathVariable long id, @RequestBody BookUpdateBean bean) {
         return service
                 .getById(id)
